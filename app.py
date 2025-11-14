@@ -20,8 +20,33 @@ app = Flask(__name__)
 
 @app.route('/entrar', methods=['POST'])
 def entrar():
-    return jsonify({"mensagem": "Rota de Login: Implementação pendente no tópico 3."})
+    dados = request.get_json()
+    if not dados or 'email' not in dados or 'senha'not in dados:
+        return jsonify({"erro": "E-mail e senha são obrigatórios."}), 400
 
+    email = dados['email']
+    senha_digitada = dados['senha']
+    
+    usuario_encontrado = None
+    for usuario in DB_USUARIOS:
+        if usuario['email'] == email:
+            usuario_encontrado = usuario
+            break
+
+    if not usuario_encontrado:
+        return jsonify({"erro": "E-mail ou senha inválidos."}), 401
+
+    if usuario_encontrado['senha'] != senha_digitada:
+        return jsonify({"erro": "E-mail ou senha inválidos."}), 401
+
+    usuario_resposta = usuario_encontrado.copy()
+    del usuario_resposta ['senha']
+    return jsonify({
+        "mensagem": "Login realizado com sucesso!",
+        "user_id": usuario_resposta['tipo_usuario'],
+        "tipo_usuario": usuario_resposta
+    }), 200
+    
 @app.route('/cadastrar', methods=['POST'])
 def cadastrar():
     global NEXT_USER_ID
