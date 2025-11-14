@@ -20,13 +20,13 @@ def entrar():
     return jsonify({"mensagem": "Rota de Login: Implementação pendente no tópico 3."})
 
 @app.route('/cadastrar', methods=['POST'])
-def cadastrar()
+def cadastrar():
     return jsonify({"mensagem": "Rota de Cadastro: Implementação pendente no Tópico 2."})
 
 @app.route('/', methods=['GET'])
 def publicacao_home():
     return jsonify(DB_PUBLICACAO[0])
 
-if__name__=='__main__':
+if __name__=='__main__':
 
     app.run(debug=True)
