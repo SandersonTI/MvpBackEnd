@@ -1,4 +1,38 @@
+### Teste de Cadastro de Turista
 POST http://127.0.0.1:5000/cadastrar
 Content-Type: application/json
 
-{}
+{
+    "nome": "João Turista",
+    "idade": 30,
+    "telefone": "1199998888",
+    "email": "joao@turista.com",
+    "senha": "senha123",
+    "tipo_usuario": "Turista"
+}
+
+### Teste de Cadastro de Parceiro
+POST http://127.0.0.1:5000/cadastrar
+Content-Type: application/json
+
+{
+    "nome": "Maria Parceira",
+    "idade": 45,
+    "telefone": "2177776666",
+    "email": "maria@parceira.com",
+    "senha": "senha456",
+    "tipo_usuario": "Parceiro"
+}
+
+### Teste de Cadastro de Administrador
+POST http://127.0.0.1:5000/cadastrar
+Content-Type: application/json
+
+{
+    "nome": "Admin Supremo",
+    "idade": 50,
+    "telefone": "3155554444",
+    "email": "admin@empresa.com",
+    "senha": "adminseguro",
+    "tipo_usuario": "Administrador"
+}
