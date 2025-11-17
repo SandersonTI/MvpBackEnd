@@ -36,3 +36,22 @@ Content-Type: application/json
     "senha": "adminseguro",
     "tipo_usuario": "Administrador"
 }
+
+### Teste de Edição de Publicação (Admin)
+POST http://127.0.0.1:5000/publicacao/editar
+Content-Type: application/json
+
+{
+    "admin_email": "admin@empresa.com",
+    "titulo": "Novidade: Roteiro de Verão 2026",
+    "descricao": "Prepare-se para as melhores viagens do ano!",
+    "imagem": "link_para_nova_imagem_verao.jpg"
+}
+
+### Teste de Exclusão/Reset de Publicação (Admin)
+POST http://127.0.0.1:5000/publicacao/excluir
+Content-Type: application/json
+
+{
+    "admin_email": "admin@empresa.com"
+}

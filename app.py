@@ -16,6 +16,12 @@ DB_PUBLICACAO.append(publicacao_inicial)
 
 TIPOS_USUARIO_VALIDOS = ["Turista","Parceiro", "Administrador"]
 
+def checar_admin(email):
+    for usuario in DB_USUARIOS:
+        if usuario['email'] == email and usuario['tipo_usuario'] == "administrador":
+            return True
+    return False    
+
 app = Flask(__name__)
 
 @app.route('/entrar', methods=['POST'])
@@ -47,6 +53,56 @@ def entrar():
         "tipo_usuario": usuario_resposta
     }), 200
     
+@app.route('/publicacao/editar', methods=['POST'])
+def editar_publicacao():
+    dados = request.get_json()
+
+    if not dados or 'admin_email' not in dados:
+        return jsonify({"erro": "Email do Administrador e dados são obrigatórios."}), 400
+    
+    admin_email = dados.get('admin_email')
+    if not checar_admin('admin_email'):
+        return jsonify({"erro": "Acesso negado, Apenas Administradores podem editar a Publicação."}), 403
+
+    campos_permitidos = ['lugar', 'titulo', 'descricao', 'imagem']
+
+    dados_para_atualizar = {k: v for k, v in dados.items() if k in campos_permitidos}
+
+    if not dados_para_atualizar:
+        return jsonify({"erro": "Nenhum campo válido para atualização da Publicação foi fornecido."}), 400
+    
+    publicacao_atual = DB_PUBLICACAO[0]
+
+    for chave, valor in dados_para_atualizar.items():
+        publicacao_atual[chave] = valor
+
+    return jsonify({
+        "mensagem": "Publicação atualizada com sucesso por " + publicacao_atual['titulo'],
+        "publicacao": publicacao_atual
+    }), 200
+
+@app.route('/publicacao/excluir', methods=['POST'])
+def excluir_publicacao():
+
+    dados = request.get_json()
+
+    if not dados or 'admin_email' not in dados:
+        return jsonify({"erro": "Email do administrador é obrigatório."}), 400
+    
+    DB_PUBLICACAO.clear
+
+    publicacao_resetada = {
+        'id': 1,
+        'lugar': 'Bem-vindo ao Turismo MVP',
+        'titulo': 'Padrão Restaurado',
+        'descricao': 'Conteúdo padrão de Publicação foi restaurado.',
+        'imagem': 'link_para_imagem_padrao.jpg'
+    }
+
+    DB_PUBLICACAO.append(publicacao_resetada)
+
+    return jsonify({"mensagem": "Publicação excluida e restaurada para o padrão (simulação de exclusão)."}),200
+
 @app.route('/cadastrar', methods=['POST'])
 def cadastrar():
     global NEXT_USER_ID
