@@ -4,6 +4,9 @@ DB_USUARIOS = []
 global NEXT_USER_ID
 NEXT_USER_ID = 1
 
+DB_PASSEIO = []
+NEXT_PASSEIO_ID = 1
+
 DB_PUBLICACAO = []
 publicacao_inicial = {
     'id' : 1,
