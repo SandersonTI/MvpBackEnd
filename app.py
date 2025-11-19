@@ -4,6 +4,9 @@ DB_USUARIOS = []
 global NEXT_USER_ID
 NEXT_USER_ID = 1
 
+DB_PASSEIOS = []
+NEXT_PASSEIOS_ID = 1
+
 DB_PUBLICACAO = []
 publicacao_inicial = {
     'id' : 1,
@@ -22,18 +25,27 @@ def checar_admin(email):
             return True
     return False    
 
+def checar_parceiro(email):
+    for usuario in DB_USUARIOS:
+        if usuario['email'] == email and usuario['tipo de usuario'] == "Parceiro":
+            return True
+    return False    
+
 app = Flask(__name__)
 
 @app.route('/entrar', methods=['POST'])
 def entrar():
+
     dados = request.get_json()
-    if not dados or 'email' not in dados or 'senha'not in dados:
+
+    if not dados or 'email' not in dados or 'senha' not in dados:
         return jsonify({"erro": "E-mail e senha são obrigatórios."}), 400
 
     email = dados['email']
     senha_digitada = dados['senha']
     
     usuario_encontrado = None
+
     for usuario in DB_USUARIOS:
         if usuario['email'] == email:
             usuario_encontrado = usuario
@@ -46,6 +58,7 @@ def entrar():
         return jsonify({"erro": "E-mail ou senha inválidos."}), 401
 
     usuario_resposta = usuario_encontrado.copy()
+
     del usuario_resposta ['senha']
     return jsonify({
         "mensagem": "Login realizado com sucesso!",
@@ -55,12 +68,14 @@ def entrar():
     
 @app.route('/publicacao/editar', methods=['POST'])
 def editar_publicacao():
+
     dados = request.get_json()
 
     if not dados or 'admin_email' not in dados:
         return jsonify({"erro": "Email do Administrador e dados são obrigatórios."}), 400
     
     admin_email = dados.get('admin_email')
+
     if not checar_admin('admin_email'):
         return jsonify({"erro": "Acesso negado, Apenas Administradores podem editar a Publicação."}), 403
 
@@ -102,6 +117,44 @@ def excluir_publicacao():
     DB_PUBLICACAO.append(publicacao_resetada)
 
     return jsonify({"mensagem": "Publicação excluida e restaurada para o padrão (simulação de exclusão)."}),200
+
+@app.route('/passeio/cadastrar', methods=['POST'])
+def cadastrar_passeio():
+
+    global NEXT_PASSEIOS_ID
+
+    dados = request.get_json()
+
+    if not dados or 'parceiro_email' not in dados:
+        return jsonify({"erro": " Email do Parceiro e dados do passeio são obrigatórios."}), 400
+    
+    parceiro_email = dados.get('parceiro_e-mail')
+
+    if not checar_parceiro(parceiro_email):
+        return jsonify({"erro": "Acesso negado. Apenas Parceiros podem cadastrar passeios. "}), 403
+    
+    campos_obrigatorios = ['título', 'descricao', 'valor', 'imagem_url']
+
+    for campo in  campos_obrigatorios:
+        if campo not in dados or not dados[campo]:
+            return jsonify({"erro": f"campo obrigatório do passeio ausente: {campo}."}), 400
+        
+    novo_passeio = {
+        'id': NEXT_PASSEIOS_ID,
+        'parceiro_email': parceiro_email,
+        'titulo': dados['titulo'],
+        'descricao': dados['descricao'],
+        'valor': dados['valor'],
+        'imagem_url': dados['imagem_url']
+    }
+
+    DB_PASSEIOS.append(novo_passeio)
+    NEXT_PASSEIO_ID += 1
+
+    return jsonify({
+        "mensagem": "Passeio cadastrado com sucesso!",
+        "passeio": novo_passeio
+    }), 201
 
 @app.route('/cadastrar', methods=['POST'])
 def cadastrar():

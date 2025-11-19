@@ -37,6 +37,15 @@ Content-Type: application/json
     "tipo_usuario": "Administrador"
 }
 
+### Teste de Login de Administrador (Sucesso)
+POST http://127.0.0.1:5000/entrar
+Content-Type: application/json
+
+{
+    "email": "admin@empresa.com",
+    "senha": "adminseguro"
+}
+
 ### Teste de Edição de Publicação (Admin)
 POST http://127.0.0.1:5000/publicacao/editar
 Content-Type: application/json
@@ -54,4 +63,28 @@ Content-Type: application/json
 
 {
     "admin_email": "admin@empresa.com"
+}
+
+### Teste de Cadastro de Passeio (Parceiro)
+POST http://127.0.0.1:5000/passeio/cadastrar
+Content-Type: application/json
+
+{
+    "parceiro_email": "parceiro@viagem.com",
+    "titulo": "Trilha para a Pedra da Gávea",
+    "descricao": "Uma aventura desafiadora com vista panorâmica do Rio de Janeiro.",
+    "valor": 75.00,
+    "imagem_url": "link_imagem_pedra_gavea.jpg"
+}
+
+### Teste de Falha (Tentativa de Cadastro por Turista)
+POST http://127.0.0.1:5000/passeio/cadastrar
+Content-Type: application/json
+
+{
+    "parceiro_email": "joao@turista.com", 
+    "titulo": "Praia de Copacabana",
+    "descricao": "Passeio simples e relaxante.",
+    "valor": 10.00,
+    "imagem_url": "link_copacabana.jpg"
 }
