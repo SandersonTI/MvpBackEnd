@@ -46,6 +46,25 @@ Content-Type: application/json
     "senha": "adminseguro"
 }
 
+### Teste de Login de Parceiro (Sucesso)
+POST http://127.0.0.1:5000/entrar
+Content-Type: application/json
+
+{
+    "email": "maria@parceira.com",
+    "senha": "senha456"
+}
+
+### Teste de Login de Turista (Sucesso)
+POST http://127.0.0.1:5000/entrar
+Content-Type: application/json
+
+{
+    "email": "joao@turista.com",
+    "senha": "senha123"
+}
+
+
 ### Teste de Edição de Publicação (Admin)
 POST http://127.0.0.1:5000/publicacao/editar
 Content-Type: application/json

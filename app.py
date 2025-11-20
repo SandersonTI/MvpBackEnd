@@ -76,7 +76,7 @@ def editar_publicacao():
     
     admin_email = dados.get('admin_email')
 
-    if not checar_admin('admin_email'):
+    if not checar_admin(admin_email):
         return jsonify({"erro": "Acesso negado, Apenas Administradores podem editar a Publicação."}), 403
 
     campos_permitidos = ['lugar', 'titulo', 'descricao', 'imagem']
