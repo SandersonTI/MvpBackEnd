@@ -156,6 +156,15 @@ def cadastrar_passeio():
         "passeio": novo_passeio
     }), 201
 
+@app.route('/passeios', methods=['GET'])
+def exibir_passeio():
+    if not DB_PASSEIOS:
+        return jsonify({"mensagem": "Nenhum passeio cadastrado no momento."}), 200
+    return jsonify({
+        "quanidade": len(DB_PASSEIOS),
+        "passeios": DB_PASSEIOS
+    }), 200
+
 @app.route('/cadastrar', methods=['POST'])
 def cadastrar():
     global NEXT_USER_ID

@@ -88,3 +88,6 @@ Content-Type: application/json
     "valor": 10.00,
     "imagem_url": "link_copacabana.jpg"
 }
+
+### Teste de Exibição de Passeios (Público)
+GET http://127.0.0.1:5000/passeios
