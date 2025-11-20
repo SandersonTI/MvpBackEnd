@@ -21,7 +21,7 @@ TIPOS_USUARIO_VALIDOS = ["Turista","Parceiro", "Administrador"]
 
 def checar_admin(email):
     for usuario in DB_USUARIOS:
-        if usuario['email'] == email and usuario['tipo_usuario'] == "administrador":
+        if usuario['email'] == email and usuario['tipo_usuario'].lower() == "administrador":
             return True
     return False    
 
