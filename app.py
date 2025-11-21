@@ -27,7 +27,7 @@ def checar_admin(email):
 
 def checar_parceiro(email):
     for usuario in DB_USUARIOS:
-        if usuario['email'] == email and usuario['tipo de usuario'] == "Parceiro":
+        if usuario['email'] == email and usuario['tipo de usuario'].lower() == "Parceiro":
             return True
     return False    
 
@@ -104,7 +104,12 @@ def excluir_publicacao():
     if not dados or 'admin_email' not in dados:
         return jsonify({"erro": "Email do administrador é obrigatório."}), 400
     
-    DB_PUBLICACAO.clear
+    admin_email = dados.get('admin_email')
+
+    if not checar_admin(admin_email):
+        return jsonify({"erro": "Acesso negado. Apenas Administradores podem excluir a Publicação."}), 403
+    
+    DB_PUBLICACAO.clear()
 
     publicacao_resetada = {
         'id': 1,
