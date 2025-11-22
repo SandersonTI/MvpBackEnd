@@ -89,7 +89,7 @@ POST http://127.0.0.1:5000/passeio/cadastrar
 Content-Type: application/json
 
 {
-    "parceiro_email": "parceiro@viagem.com",
+    "parceiro_email": "maria@parceiro.com",
     "titulo": "Trilha para a Pedra da Gávea",
     "descricao": "Uma aventura desafiadora com vista panorâmica do Rio de Janeiro.",
     "valor": 75.00,

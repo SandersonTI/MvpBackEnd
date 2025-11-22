@@ -27,7 +27,7 @@ def checar_admin(email):
 
 def checar_parceiro(email):
     for usuario in DB_USUARIOS:
-        if usuario['email'] == email and usuario['tipo de usuario'].lower() == "Parceiro":
+        if usuario['email'] == email and usuario['tipo_usuario'].lower() == "parceiro":
             return True
     return False    
 
@@ -61,10 +61,13 @@ def entrar():
 
     del usuario_resposta ['senha']
     return jsonify({
-        "mensagem": "Login realizado com sucesso!",
-        "user_id": usuario_resposta['tipo_usuario'],
-        "tipo_usuario": usuario_resposta
-    }), 200
+    "mensagem": "Login realizado com sucesso!",
+    "user_id": usuario_resposta['id'],
+    "nome": usuario_resposta['nome'],
+    "email": usuario_resposta['email'],
+    "tipo_usuario": usuario_resposta['tipo_usuario']
+}), 200
+
     
 @app.route('/publicacao/editar', methods=['POST'])
 def editar_publicacao():
@@ -133,12 +136,12 @@ def cadastrar_passeio():
     if not dados or 'parceiro_email' not in dados:
         return jsonify({"erro": " Email do Parceiro e dados do passeio são obrigatórios."}), 400
     
-    parceiro_email = dados.get('parceiro_e-mail')
+    parceiro_email = dados.get('parceiro_email')
 
     if not checar_parceiro(parceiro_email):
         return jsonify({"erro": "Acesso negado. Apenas Parceiros podem cadastrar passeios. "}), 403
     
-    campos_obrigatorios = ['título', 'descricao', 'valor', 'imagem_url']
+    campos_obrigatorios = ['titulo', 'descricao', 'valor', 'imagem_url']
 
     for campo in  campos_obrigatorios:
         if campo not in dados or not dados[campo]:
@@ -154,7 +157,7 @@ def cadastrar_passeio():
     }
 
     DB_PASSEIOS.append(novo_passeio)
-    NEXT_PASSEIO_ID += 1
+    NEXT_PASSEIOS_ID += 1
 
     return jsonify({
         "mensagem": "Passeio cadastrado com sucesso!",
@@ -217,6 +220,10 @@ def cadastrar():
 @app.route('/', methods=['GET'])
 def publicacao_home():
     return jsonify(DB_PUBLICACAO[0])
+
+@app.route('/debug/usuarios', methods=['GET'])
+def debug_usuarios():
+    return jsonify(DB_USUARIOS)
 
 if __name__=='__main__':
     app.run(debug=True)
