@@ -7,6 +7,9 @@ NEXT_USER_ID = 1
 DB_PASSEIOS = []
 NEXT_PASSEIOS_ID = 1
 
+DB_COMPRAS = []
+NEXT_COMPRAS_ID = 1
+
 DB_PUBLICACAO = []
 publicacao_inicial = {
     'id' : 1,
@@ -30,6 +33,12 @@ def checar_parceiro(email):
         if usuario['email'] == email and usuario['tipo_usuario'].lower() == "parceiro":
             return True
     return False    
+
+def checar_turista(email):
+    for usuario in DB_USUARIOS:
+        if usuario['email'] == email and usuario['tipo_usuario'].lower() == "turista":
+            return usuario
+    return None
 
 app = Flask(__name__)
 
@@ -163,6 +172,51 @@ def cadastrar_passeio():
         "mensagem": "Passeio cadastrado com sucesso!",
         "passeio": novo_passeio
     }), 201
+
+@app.route('/passeio/comprar', methods=['POST'])
+def comprar_passeio():
+    
+    global NEXT_COMPRA_ID
+
+    dados = request.get_json()
+
+    if not dados or 'turista_email' not in dados or 'passeio_id' not in dados:
+        return jsonify({"erro": "Email do turista e ID do Passeio são obrigatórios"}), 400
+            
+    turista_email = dados.get('turista_email')
+    passeio_id = dados.get('passeio_id')
+
+    turista = checar_turista(turista_email)
+    
+    if not turista:
+        return jsonify({"erro": "Acesso negado. Apenas Turistas podem realizar compras."}), 403
+    
+    passeio_encontrado = None
+
+    for passeio in DB_PASSEIOS:
+        if passeio['id'] == passeio_id:
+            passeio_encontrado = passeio
+            break
+
+    if not passeio_encontrado:
+        return jsonify({"erro": f"Passeio com ID {passeio_id} não encontrado."}), 404
+    
+    registro_compra = {
+        'id': NEXT_COMPRA_ID,
+        'turista_id': turista['id'],
+        'turista_email': turista_email,
+        'passeio_id': passeio_id,
+        'passeio_titulo': passeio_encontrado['titulo'],
+        'valor_pago': passeio_encontrado['valor']
+    }
+
+    DB_COMPRAS.append(registro_compra)
+    NEXT_COMPRA_ID += 1
+
+    return jsonify({
+    "mensagem": "Compra registrada com sucesso!",
+    "detalhes": registro_compra
+}), 201
 
 @app.route('/passeios', methods=['GET'])
 def exibir_passeio():

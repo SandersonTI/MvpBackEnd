@@ -110,3 +110,21 @@ Content-Type: application/json
 
 ### Teste de Exibição de Passeios (Público)
 GET http://127.0.0.1:5000/passeios
+
+### Teste de Compra de Passeio (Turista)
+POST http://127.0.0.1:5000/passeio/comprar
+Content-Type: application/json
+
+{
+    "turista_email": "turista@email.com", 
+    "passeio_id": 1
+}
+
+### Teste de Falha (Tentativa de Compra por Parceiro)
+POST http://127.0.0.1:5000/passeio/comprar
+Content-Type: application/json
+
+{
+    "turista_email": "parceiro@viagem.com", 
+    "passeio_id": 1
+}
