@@ -227,6 +227,35 @@ def exibir_passeio():
         "passeios": DB_PASSEIOS
     }), 200
 
+@app.route('/turista/minhas-compras', methods=['GET'])
+def minhas_compras():
+
+    dados = request.get_json()
+
+    if not dados or 'turista_email' not in dados:
+        return jsonify({"erro": "Email do Turista é obrigatório para visualização."}), 400
+    
+    turista_email = dados.get('turista_email')
+
+    turista = checar_turista(turista_email)
+    if not turista:
+        return jsonify({"erro": "Acesso negado. Apenas Turistas podem ver este histórico."}), 403
+    
+    turista_id = turista['id']
+
+    minhas_compras = [
+        compra for compra in DB_COMPRASif compra['turista_id'] == turista_id
+    ]
+
+    if not minhas_compras:
+        return jsonify({"mensagem": "Você ainda não possui compras registradas."}), 200
+    
+    return jsonify({
+        "turista_nome": turista['nome'],
+        "total_compras": len(minhas_compras),
+        "compras": minhas_compras
+    }), 200
+
 @app.route('/cadastrar', methods=['POST'])
 def cadastrar():
     global NEXT_USER_ID
