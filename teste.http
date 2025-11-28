@@ -128,3 +128,24 @@ Content-Type: application/json
     "turista_email": "parceiro@viagem.com", 
     "passeio_id": 1
 }
+
+### Teste de Histórico de Compras (Turista)
+GET http://127.0.0.1:5000/turista/minhas-compras
+Content-Type: application/json
+
+{
+    "turista_email": "turista@email.com"
+}
+
+### Teste de Validação (Tópico 4.2)
+POST http://127.0.0.1:5000/cadastrar
+Content-Type: application/json
+
+{
+    "nome": "",  
+    "idade": 25,
+    "telefone": "1199998888",
+    "email": "teste@vazio.com",
+    "senha": "123",
+    "tipo_usuario": "Turista"
+}

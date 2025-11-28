@@ -40,6 +40,25 @@ def checar_turista(email):
             return usuario
     return None
 
+def validar_dados(dados, campos_obrigatorios):
+    """
+    Verifica se todos os campos obrigatórios estão presentes e não vazios (para string) ou nulos (para números).
+    Retorna (True, None) se tudo estiver OK, ou (False, "erro") caso contrário
+    """
+    for campo in campos_obrigatorios:
+        if campo not in dados:
+            return False, f"Campo obrigatório ausente: {campo}."
+
+        valor = dados[campo]
+
+        if isinstance(valor, str) and not valor.strip():
+            return False, f"O campo {campo} não pode ser vazio."
+        
+        if valor is None:
+            return False, f"O campo {campo} não pode ser nulo."
+        
+    return True, None
+
 app = Flask(__name__)
 
 @app.route('/entrar', methods=['POST'])
@@ -244,8 +263,8 @@ def minhas_compras():
     turista_id = turista['id']
 
     minhas_compras = [
-        compra for compra in DB_COMPRASif compra['turista_id'] == turista_id
-    ]
+        compra for compra in DB_COMPRAS if compra['turista_id'] == turista_id
+        ]
 
     if not minhas_compras:
         return jsonify({"mensagem": "Você ainda não possui compras registradas."}), 200
@@ -265,9 +284,10 @@ def cadastrar():
 
     campos_obrigatorios = ['nome', 'idade', 'telefone', 'email', 'senha', 'tipo_usuario']
 
-    for campo in campos_obrigatorios:
-        if campo not in dados:
-            return jsonify({"erro": f"Campo obrigatório ausente: {campo}."}), 400
+    valido, erro_msg = validar_dados(dados, campos_obrigatorios)
+
+    if not valido:
+        return jsonify({"erro": erro_msg}), 400
         
     if not isinstance(dados['idade'], int) or dados['idade'] <= 0:
         return jsonify({"erro": "Idade deve ser um número inteiro positivo."}), 400
