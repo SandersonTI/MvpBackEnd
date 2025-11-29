@@ -89,7 +89,7 @@ POST http://127.0.0.1:5000/passeio/cadastrar
 Content-Type: application/json
 
 {
-    "parceiro_email": "maria@parceiro.com",
+    "parceiro_email": "maria@parceira.com",
     "titulo": "Trilha para a Pedra da Gávea",
     "descricao": "Uma aventura desafiadora com vista panorâmica do Rio de Janeiro.",
     "valor": 75.00,
@@ -116,7 +116,7 @@ POST http://127.0.0.1:5000/passeio/comprar
 Content-Type: application/json
 
 {
-    "turista_email": "turista@email.com", 
+    "turista_email": "joao@turista.com", 
     "passeio_id": 1
 }
 
@@ -130,12 +130,13 @@ Content-Type: application/json
 }
 
 ### Teste de Histórico de Compras (Turista)
-GET http://127.0.0.1:5000/turista/minhas-compras
+POST http://127.0.0.1:5000/turista/minhas-compras
 Content-Type: application/json
 
 {
-    "turista_email": "turista@email.com"
+    "turista_email": "joao@turista.com"
 }
+
 
 ### Teste de Validação (Tópico 4.2)
 POST http://127.0.0.1:5000/cadastrar

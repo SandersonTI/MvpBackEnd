@@ -8,7 +8,7 @@ DB_PASSEIOS = []
 NEXT_PASSEIOS_ID = 1
 
 DB_COMPRAS = []
-NEXT_COMPRAS_ID = 1
+NEXT_COMPRA_ID = 1
 
 DB_PUBLICACAO = []
 publicacao_inicial = {
@@ -246,7 +246,7 @@ def exibir_passeio():
         "passeios": DB_PASSEIOS
     }), 200
 
-@app.route('/turista/minhas-compras', methods=['GET'])
+@app.route('/turista/minhas-compras', methods=['Post'])
 def minhas_compras():
 
     dados = request.get_json()
