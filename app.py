@@ -242,7 +242,7 @@ def exibir_passeio():
     if not DB_PASSEIOS:
         return jsonify({"mensagem": "Nenhum passeio cadastrado no momento."}), 200
     return jsonify({
-        "quanidade": len(DB_PASSEIOS),
+        "quantidade": len(DB_PASSEIOS),
         "passeios": DB_PASSEIOS
     }), 200
 
@@ -298,7 +298,7 @@ def cadastrar():
                             
     tipo_usuario = dados['tipo_usuario']
     if tipo_usuario not in TIPOS_USUARIO_VALIDOS:
-        return jsonify({"erro": f"Tipo de usuário inválido. Escolha entre: {', '.join(TIPOS_USUARIO_VALIDOS)} "})
+        return jsonify({"erro": f"Tipo de usuário inválido. Escolha entre: {', '.join(TIPOS_USUARIO_VALIDOS)} "}), 400
     
     novo_usuario = {
         'id': NEXT_USER_ID,
