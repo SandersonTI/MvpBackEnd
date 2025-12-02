@@ -197,6 +197,86 @@ def cadastrar_passeio():
         "passeio": novo_passeio
     }), 201
 
+@app.route('/passeio/editar', methods=['POST'])
+def editar_passeio():
+    dados = request.get_json()
+
+    if not dados or 'parceiro_email' not in dados or 'passeio_id' not in dados:
+        return jsonify({"erro": "Email do Parceiro, ID do Parceiro e dados de atualização são obrigatórios"}), 400
+    
+    parceiro_email = dados.get('parceiro_email')
+    passeio_id = dados.get('passeio_id')
+
+    if not checar_parceiro(parceiro_email):
+        return jsonify({"erro": "Acesso negado. Apenas Parceiros podem editar passeios"}), 403
+    
+    passeio_encontrado = None
+
+    for passeio in DB_PASSEIOS:
+        if passeio['id'] == passeio_id:
+            if passeio['parceiro_email'] != parceiro_email:
+                return jsonify({"erro": "Acesso negado. Você só pode editar seus próprios passeios."}), 403
+            passeio_encontrado = passeio
+            break
+
+    if not passeio_encontrado:
+        return jsonify({"erro": f"Passeio com ID {passeio_id} não encontrado."}), 404
+    
+    campos_permitidos = [
+        'titulo', 'descricao', 'valor', 'imagem_url', 
+        'data_passeio', 'horario_partida', 'horario_retorno'
+    ]
+
+    dados_para_atualizar = {k: v for k, v in dados.items() if k in campos_permitidos}
+
+    if not dados_para_atualizar:
+        return jsonify({"erro": "Nenhum campo válido para atualização foi fornecido."}), 400
+    
+    for chave, valor in dados_para_atualizar.items():
+        if isinstance(valor, str) and not valor.strip():
+            return jsonify({"erro": f"O campo {chave} não pode ser vazio."}), 400
+        if valor is not None:
+            passeio_encontrado[chave] = valor
+
+    return jsonify({
+        "mensagem": f"Passeio ID {passeio_id} atualizado com sucesso!", "passeio_atualizado": passeio_encontrado
+    }), 200
+
+@app.route('/passeio/excluir', methods=['POST'])
+def excluir_passeio():
+    dados = request.get_json()
+
+    if not dados or 'parceiro_email' not in dados or 'passeio_id' not in dados:
+        return jsonify({"erro": "Email do Parceiro e ID do Passeio são obrigatórios para exclusão."}), 400
+
+    parceiro_email = dados.get('parceiro_email')
+    passeio_id = dados.get('passeio_id')
+
+    if not checar_parceiro(parceiro_email):
+        return jsonify({"erro": "Acesso negado. Apenas Parceiros podem excluir passeios."}), 403
+
+    global DB_PASSEIOS
+    passeio_a_excluir = None 
+
+    for i, passeio in enumerate(DB_PASSEIOS):
+        if passeio['id'] == passeio_id:
+            
+            if passeio['parceiro_email'] != parceiro_email:
+                return jsonify({"erro": "Acesso negado. Você só pode excluir seus próprios passeios."}), 403
+            
+            passeio_a_excluir = passeio
+            
+            DB_PASSEIOS.pop(i) 
+            break
+            
+    if not passeio_a_excluir:
+        return jsonify({"erro": f"Passeio com ID {passeio_id} não encontrado."}), 404
+
+    return jsonify({
+        "mensagem": f"Passeio ID {passeio_id} '{passeio_a_excluir['titulo']}' excluído com sucesso!",
+        "passeio_excluido": passeio_a_excluir
+    }), 200
+
 @app.route('/passeio/comprar', methods=['POST'])
 def comprar_passeio():
     

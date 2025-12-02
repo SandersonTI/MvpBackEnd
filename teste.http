@@ -153,3 +153,46 @@ Content-Type: application/json
     "senha": "123",
     "tipo_usuario": "Turista"
 }
+
+### Teste de Edição de Passeio (Parceiro - Sucesso)
+POST http://127.0.0.1:5000/passeio/editar
+Content-Type: application/json
+
+{
+    "parceiro_email": "maria@parceira.com",
+    "passeio_id": 1,
+    "titulo": "Trilha da Gávea - Versão Premium",
+    "valor": 95.00,
+    "horario_retorno": "16:00"
+}
+
+### Teste de Edição de Passeio (Falha - Turista tentando editar)
+POST http://127.0.0.1:5000/passeio/editar
+Content-Type: application/json
+
+{
+    "parceiro_email": "joao@turista.com", 
+    "passeio_id": 1,
+    "titulo": "Tentativa de Edição por Turista"
+}
+
+### Teste de Edição de Passeio (Falha - Parceiro errado tentando editar)
+POST http://127.0.0.1:5000/passeio/editar
+Content-Type: application/json
+
+{
+    "parceiro_email": "outroparceiro@viagem.com", 
+    "passeio_id": 1,
+    "titulo": "Tentativa de Edição por Outro Parceiro"
+}
+
+### Teste de Edição de Passeio (Falha - Campo obrigatório vazio)
+POST http://127.0.0.1:5000/passeio/editar
+Content-Type: application/json
+
+{
+    "parceiro_email": "maria@parceira.com",
+    "passeio_id": 1,
+    "titulo": "",
+    "descricao": "Descrição Vazia"
+}
