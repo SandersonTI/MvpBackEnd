@@ -93,7 +93,10 @@ Content-Type: application/json
     "titulo": "Trilha para a Pedra da Gávea",
     "descricao": "Uma aventura desafiadora com vista panorâmica do Rio de Janeiro.",
     "valor": 75.00,
-    "imagem_url": "link_imagem_pedra_gavea.jpg"
+    "imagem_url": "link_imagem_pedra_gavea.jpg",
+    "data_passeio": "2026-12-05",        
+    "horario_partida": "07:00",          
+    "horario_retorno": "15:00"
 }
 
 ### Teste de Falha (Tentativa de Cadastro por Turista)

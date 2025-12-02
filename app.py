@@ -169,19 +169,24 @@ def cadastrar_passeio():
     if not checar_parceiro(parceiro_email):
         return jsonify({"erro": "Acesso negado. Apenas Parceiros podem cadastrar passeios. "}), 403
     
-    campos_obrigatorios = ['titulo', 'descricao', 'valor', 'imagem_url']
+    campos_obrigatorios = ['titulo', 'descricao', 'valor', 'imagem_url', 'data_passeio', 'horario_partida', 'horario_retorno']
 
-    for campo in  campos_obrigatorios:
-        if campo not in dados or not dados[campo]:
-            return jsonify({"erro": f"campo obrigatório do passeio ausente: {campo}."}), 400
-        
+    valido, erro_msg = validar_dados(dados, campos_obrigatorios)
+    if not valido:
+        return jsonify({"erro": erro_msg}), 400
+    if not isinstance(dados['valor'], (int, float)) or dados['valor'] <= 0:
+        return jsonify({"erro": "Valor deve ser um número positivo."}), 400
+      
     novo_passeio = {
         'id': NEXT_PASSEIOS_ID,
         'parceiro_email': parceiro_email,
         'titulo': dados['titulo'],
         'descricao': dados['descricao'],
         'valor': dados['valor'],
-        'imagem_url': dados['imagem_url']
+        'imagem_url': dados['imagem_url'],
+        'data_passeio' : dados['data_passeio'],          
+        'horario_partida': dados['horario_partida'],    
+        'horario_retorno': dados['horario_retorno'] 
     }
 
     DB_PASSEIOS.append(novo_passeio)
